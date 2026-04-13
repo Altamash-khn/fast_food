@@ -27,7 +27,7 @@ export async function createUser({ name, email, password }: CreateUserParams) {
     await signIn({ email, password });
 
     const avatarUrl = avatars.getInitials(name);
-    
+
     const newUser = await databases.createDocument(
       appwriteConfig.databaseId,
       appwriteConfig.usersCollectionId,
@@ -50,6 +50,23 @@ export async function signIn({ email, password }: SignInParams) {
   try {
     const session = await account.createEmailPasswordSession(email, password);
     return session;
+  } catch (error) {
+    throw new Error(error as string);
+  }
+}
+
+export async function getCurrentUser() {
+  try {
+    const currentAccount = await account.get();
+    if (!currentAccount) throw Error;
+
+    const currentUser = await databases.getDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.usersCollectionId,
+      currentAccount.$id,
+    );
+
+    return currentUser.documents[0];
   } catch (error) {
     throw new Error(error as string);
   }
