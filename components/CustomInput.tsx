@@ -9,6 +9,7 @@ export default function CustomInput({
   label,
   secureTextEntry = false,
   keyboardType = "default",
+  error,
 }: CustomInputProps) {
   const [isFocused, setIsFocused] = useState(false);
 
@@ -28,6 +29,8 @@ export default function CustomInput({
         onBlur={() => setIsFocused(false)}
         className={`input ${isFocused ? "border-primary" : "border-gray-300"}`}
       />
+
+      {error && <Text className="text-red-500 mt-3 ml-3">{error}</Text>}
     </View>
   );
 }

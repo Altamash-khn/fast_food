@@ -31,8 +31,7 @@
         "expo-splash-screen",
         {
           "image": "./assets/images/Delicious burger on a wooden board.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
+          "resizeMode": "cover",
           "backgroundColor": "#ffffff",
           "dark": {
             "backgroundColor": "#000000"

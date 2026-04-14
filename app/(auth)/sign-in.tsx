@@ -1,52 +1,85 @@
 import { View, Text, Alert } from "react-native";
-import React, { useState } from "react";
+import React from "react";
 import { Link, router } from "expo-router";
 import CustomButton from "@/components/CustomButton";
 import CustomInput from "@/components/CustomInput";
 import { signIn } from "@/lib/appwrite";
+import { Controller, useForm } from "react-hook-form";
 
 const SignIn = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
   });
 
-  async function handleSignIn() {
-    setIsSubmitting(true);
+  async function handleSignIn(data: { email: string; password: string }) {
+    const cleanedData = {
+      email: data.email.trim(),
+      password: data.password.trim(),
+    };
 
     try {
-      await signIn({ email: formData.email, password: formData.password });
+      await signIn(cleanedData);
       router.replace("/");
     } catch (error) {
       Alert.alert("Error", "Failed to sign in. Please check your credentials.");
       console.error("Sign-in error:", error);
-    } finally {
-      setIsSubmitting(false);
     }
   }
 
   return (
     <View className="gap-10 bg-white rounded-lg p-5 mt-5">
-      <CustomInput
-        placeholder="Enter your email"
-        value={formData.email}
-        onChangeText={(text) => setFormData({ ...formData, email: text })}
-        label="Email"
-        keyboardType="email-address"
+      <Controller
+        control={control}
+        name="email"
+        rules={{
+          required: "Email is required",
+          pattern: {
+            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+            message: "Enter a valid email",
+          },
+        }}
+        render={({ field }) => {
+          return (
+            <CustomInput
+              placeholder="Enter your email"
+              value={field.value}
+              onChangeText={field.onChange}
+              label="Email"
+              keyboardType="email-address"
+              error={errors.email?.message!}
+            />
+          );
+        }}
       />
 
-      <CustomInput
-        placeholder="Enter your password"
-        value={formData.password}
-        onChangeText={(text) => setFormData({ ...formData, password: text })}
-        label="Password"
-        secureTextEntry={true}
-      />
+      <Controller
+        control={control}
+        name="password"
+        rules={{ required: "Password is required" }}
+        render={({ field }) => {
+          return (
+            <CustomInput
+              placeholder="Enter your password"
+              value={field.value}
+              onChangeText={field.onChange}
+              label="Password"
+              secureTextEntry={true}
+              error={errors.password?.message!}
+            />
+          );
+        }}
+      ></Controller>
       <CustomButton
         title="Sign In"
         isLoading={isSubmitting}
-        onPress={handleSignIn}
+        onPress={handleSubmit(handleSignIn)}
       />
 
       <View className="flex justify-center mt-5 flex-row gap-2">

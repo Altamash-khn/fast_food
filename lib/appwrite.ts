@@ -1,5 +1,12 @@
 import { CreateUserParams, SignInParams } from "@/type";
-import { Account, Avatars, Client, Databases, ID } from "react-native-appwrite";
+import {
+  Account,
+  Avatars,
+  Client,
+  Databases,
+  ID,
+  Query,
+} from "react-native-appwrite";
 
 export const appwriteConfig = {
   endpoint: process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT!,
@@ -17,7 +24,6 @@ client
 
 export const account = new Account(client);
 export const databases = new Databases(client);
-const avatars = new Avatars(client);
 
 export async function createUser({ name, email, password }: CreateUserParams) {
   try {
@@ -26,8 +32,6 @@ export async function createUser({ name, email, password }: CreateUserParams) {
 
     await signIn({ email, password });
 
-    const avatarUrl = avatars.getInitials(name);
-
     const newUser = await databases.createDocument(
       appwriteConfig.databaseId,
       appwriteConfig.usersCollectionId,
@@ -35,7 +39,6 @@ export async function createUser({ name, email, password }: CreateUserParams) {
       {
         name,
         email,
-        avatar: avatarUrl,
         accountId: newAccount.$id,
       },
     );
@@ -59,14 +62,18 @@ export async function getCurrentUser() {
   try {
     const currentAccount = await account.get();
     if (!currentAccount) throw Error;
+    console.log("currentAccount", currentAccount);
 
-    const currentUser = await databases.getDocument(
+    const result = await databases.listDocuments(
       appwriteConfig.databaseId,
       appwriteConfig.usersCollectionId,
-      currentAccount.$id,
+      [Query.equal("accountId", currentAccount.$id)],
     );
 
-    return currentUser.documents[0];
+    if (result.documents.length === 0) throw Error;
+
+    const currentUser = result.documents[0];
+    return currentUser;
   } catch (error) {
     throw new Error(error as string);
   }
