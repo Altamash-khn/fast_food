@@ -1,10 +1,11 @@
 import { View, Text, Alert } from "react-native";
-import React, { useState } from "react";
+import React from "react";
 import { Link, router } from "expo-router";
 import CustomButton from "@/components/CustomButton";
 import CustomInput from "@/components/CustomInput";
 import { createUser } from "@/lib/appwrite";
 import { Controller, useForm } from "react-hook-form";
+import { useAuthStore } from "../../store/auth.store";
 
 const SignUp = () => {
   const {
@@ -18,6 +19,7 @@ const SignUp = () => {
       password: "",
     },
   });
+  const { fetchAuthenticatedUser } = useAuthStore();
 
   async function handleSignUp(data: {
     name: string;
@@ -32,6 +34,7 @@ const SignUp = () => {
 
     try {
       await createUser(cleanedData);
+      await fetchAuthenticatedUser();
 
       router.replace("/");
     } catch (error) {

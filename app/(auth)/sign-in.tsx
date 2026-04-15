@@ -5,6 +5,7 @@ import CustomButton from "@/components/CustomButton";
 import CustomInput from "@/components/CustomInput";
 import { signIn } from "@/lib/appwrite";
 import { Controller, useForm } from "react-hook-form";
+import { useAuthStore } from "../../store/auth.store";
 
 const SignIn = () => {
   const {
@@ -17,6 +18,7 @@ const SignIn = () => {
       password: "",
     },
   });
+  const { fetchAuthenticatedUser } = useAuthStore();
 
   async function handleSignIn(data: { email: string; password: string }) {
     const cleanedData = {
@@ -26,6 +28,7 @@ const SignIn = () => {
 
     try {
       await signIn(cleanedData);
+      await fetchAuthenticatedUser();
       router.replace("/");
     } catch (error) {
       Alert.alert("Error", "Failed to sign in. Please check your credentials.");

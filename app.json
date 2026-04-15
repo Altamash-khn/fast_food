@@ -4,19 +4,18 @@
     "slug": "fast_food",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/Delicious burger on a wooden board.png",
+    "icon": "./assets/images/Delicious burger on a wooden board.jpg",
     "scheme": "fastfood",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/Delicious burger on a wooden board.png",
-        "backgroundImage": "./assets/images/Delicious burger on a wooden board.png",
-        "monochromeImage": "./assets/images/Delicious burger on a wooden board.png"
+        "foregroundImage": "./assets/images/Delicious burger on a wooden board.jpg",
+        "backgroundImage": "./assets/images/Delicious burger on a wooden board.jpg",
+        "monochromeImage": "./assets/images/Delicious burger on a wooden board.jpg"
       },
       "predictiveBackGestureEnabled": false
     },
@@ -30,8 +29,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/Delicious burger on a wooden board.png",
-          "resizeMode": "cover",
+          "image": "./assets/images/Delicious burger on a wooden board.jpg",
           "backgroundColor": "#ffffff",
           "dark": {
             "backgroundColor": "#000000"
