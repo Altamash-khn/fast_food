@@ -1,5 +1,12 @@
-import { CreateUserParams, SignInParams } from "@/type";
-import { Account, Client, Databases, ID, Query, Storage } from "react-native-appwrite";
+import { CreateUserParams, GetMenuParams, SignInParams } from "@/type";
+import {
+  Account,
+  Client,
+  Databases,
+  ID,
+  Query,
+  Storage,
+} from "react-native-appwrite";
 
 export const appwriteConfig = {
   endpoint: process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT!,
@@ -8,10 +15,13 @@ export const appwriteConfig = {
   bucketId: process.env.EXPO_PUBLIC_APPWRITE_BUCKET_ID!,
   platform: "com.ayan.movieapp",
   usersCollectionId: process.env.EXPO_PUBLIC_APPWRITE_COLLECTION_ID!,
-  categoriesCollectionId: process.env.EXPO_PUBLIC_APPWRITE_CATEGORIES_COLLECTION_ID!,
+  categoriesCollectionId:
+    process.env.EXPO_PUBLIC_APPWRITE_CATEGORIES_COLLECTION_ID!,
   menuCollectionId: process.env.EXPO_PUBLIC_APPWRITE_MENU_COLLECTION_ID!,
-  customizationCollectionId: process.env.EXPO_PUBLIC_APPWRITE_CUSTOMIZATION_COLLECTION_ID!,
-  menuCustomizationCollectionId: process.env.EXPO_PUBLIC_APPWRITE_MENU_CUSTOMIZATION_COLLECTION_ID!,
+  customizationCollectionId:
+    process.env.EXPO_PUBLIC_APPWRITE_CUSTOMIZATION_COLLECTION_ID!,
+  menuCustomizationCollectionId:
+    process.env.EXPO_PUBLIC_APPWRITE_MENU_CUSTOMIZATION_COLLECTION_ID!,
 };
 
 export const client = new Client();
@@ -73,6 +83,37 @@ export async function getCurrentUser() {
 
     const currentUser = result.documents[0];
     return currentUser;
+  } catch (error) {
+    throw new Error(error as string);
+  }
+}
+
+export async function getMenu({ category, query }: GetMenuParams) {
+  try {
+    const queries: string[] = [];
+
+    if (category) queries.push(Query.equal("categories", category));
+    if (query) queries.push(Query.search("name", query));
+
+    const menu = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.menuCollectionId,
+      queries,
+    );
+
+    return menu.documents;
+  } catch (error) {
+    throw new Error(error as string);
+  }
+}
+
+export async function getCategories() {
+  try {
+    const categories = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.categoriesCollectionId,
+    );
+    return categories.documents;
   } catch (error) {
     throw new Error(error as string);
   }
