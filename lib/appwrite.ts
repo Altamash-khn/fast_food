@@ -71,7 +71,6 @@ export async function getCurrentUser() {
   try {
     const currentAccount = await account.get();
     if (!currentAccount) throw Error;
-    console.log("currentAccount", currentAccount);
 
     const result = await databases.listDocuments(
       appwriteConfig.databaseId,
@@ -88,12 +87,13 @@ export async function getCurrentUser() {
   }
 }
 
-export async function getMenu({ category, query }: GetMenuParams) {
+export async function getMenu({ category, query, limit }: GetMenuParams) {
   try {
     const queries: string[] = [];
 
     if (category) queries.push(Query.equal("categories", category));
     if (query) queries.push(Query.search("name", query));
+    if (limit) queries.push(Query.limit(limit));
 
     const menu = await databases.listDocuments(
       appwriteConfig.databaseId,
