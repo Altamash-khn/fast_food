@@ -5,6 +5,10 @@ import useFetch from "@/lib/useFetch";
 import { getCategories, getMenu } from "@/lib/appwrite";
 import { useLocalSearchParams } from "expo-router";
 import CartButton from "@/components/CartButton";
+import MenuCard from "@/components/MenuCard";
+import { Category, MenuItem } from "@/type";
+import SearchBar from "@/components/SearchBar";
+import Filter from "@/components/Filter";
 
 export default function Search() {
   const { category, query } = useLocalSearchParams<{
@@ -17,7 +21,7 @@ export default function Search() {
     params: {
       category: category || "",
       query: query || "",
-      limit: 6,
+      limit: 10,
     },
   });
 
@@ -26,7 +30,7 @@ export default function Search() {
   });
 
   useEffect(() => {
-    refetch({ category: category || "", query: query || "", limit: 6 });
+    refetch({ category: category || "", query: query || "", limit: 10 });
   }, [category, query]);
 
   return (
@@ -39,14 +43,14 @@ export default function Search() {
             <View
               className={`flex-1 w-[48%] ${!isFirstRightColItem ? "mt-10" : ""}`}
             >
-              <Text>Menu Card</Text>
-            </View> 
+              <MenuCard item={item as unknown as MenuItem} />
+            </View>
           );
         }}
         keyExtractor={(item) => item.$id}
         numColumns={2}
         columnWrapperClassName="gap-7"
-        contentContainerClassName="gap-7 px-5 mb-32"
+        contentContainerClassName="gap-7 px-5 pb-32"
         ListHeaderComponent={() => {
           return (
             <View className="my-5 gap-5">
@@ -65,9 +69,9 @@ export default function Search() {
                 <CartButton />
               </View>
 
-              <Text>Search Input</Text>
+              <SearchBar />
 
-              <Text>Filder</Text>
+              <Filter categories={categories as unknown as Category[]} />
             </View>
           );
         }}

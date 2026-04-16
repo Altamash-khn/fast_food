@@ -22,7 +22,6 @@ const useFetch = <T, P extends Record<string, string | number>>({
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(!skip);
   const [error, setError] = useState<string | null>(null);
-  console.log("params", params);
 
   const fetchData = useCallback(
     async (fetchParams: P) => {
