@@ -9,6 +9,7 @@ import MenuCard from "@/components/MenuCard";
 import { Category, MenuItem } from "@/type";
 import SearchBar from "@/components/SearchBar";
 import Filter from "@/components/Filter";
+import NoResults from "@/components/NoResults";
 
 export default function Search() {
   const { category, query } = useLocalSearchParams<{
@@ -75,7 +76,7 @@ export default function Search() {
             </View>
           );
         }}
-        ListEmptyComponent={() => !loading && <Text>No results found</Text>}
+        ListEmptyComponent={() => !loading && <NoResults />}
       />
     </SafeAreaView>
   );
