@@ -19,11 +19,11 @@ const MenuCard = ({ item }: { item: MenuItem }) => {
     >
       <Image
         source={{ uri: imageUrl }}
-        className="size-32 absolute -top-0"
+        className="size-32 absolute -top-0 "
         resizeMode="contain"
       />
       <Text
-        className="text-center base-bold text-dark-100 mb-2 mt-6"
+        className="text-center base-bold text-dark-100 mb-2 mt-8"
         numberOfLines={1}
       >
         {name}
