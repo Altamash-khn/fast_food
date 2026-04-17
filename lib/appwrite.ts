@@ -1,4 +1,5 @@
 import { CreateUserParams, GetMenuParams, SignInParams } from "@/type";
+import * as ImagePicker from "expo-image-picker";
 import {
   Account,
   Client,
@@ -22,6 +23,7 @@ export const appwriteConfig = {
     process.env.EXPO_PUBLIC_APPWRITE_CUSTOMIZATION_COLLECTION_ID!,
   menuCustomizationCollectionId:
     process.env.EXPO_PUBLIC_APPWRITE_MENU_CUSTOMIZATION_COLLECTION_ID!,
+  imageStorageBucketId: process.env.EXPO_PUBLIC_APPWRITE_IMAGE_STORAGE_BUCKET_ID!,
 };
 
 export const client = new Client();
@@ -34,7 +36,13 @@ export const account = new Account(client);
 export const databases = new Databases(client);
 export const storage = new Storage(client);
 
-export async function createUser({ name, email, password }: CreateUserParams) {
+export async function createUser({
+  name,
+  email,
+  password,
+  contact,
+  fileId,
+}: CreateUserParams) {
   try {
     const newAccount = await account.create(ID.unique(), email, password, name);
     if (!newAccount) throw Error;
@@ -49,7 +57,9 @@ export async function createUser({ name, email, password }: CreateUserParams) {
         name,
         email,
         accountId: newAccount.$id,
-      },
+        contact,
+        fileId,
+      }
     );
 
     return newUser;
@@ -116,5 +126,42 @@ export async function getCategories() {
     return categories.documents;
   } catch (error) {
     throw new Error(error as string);
+  }
+}
+
+export async function pickImage() {
+  const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+  if (!permission.granted) {
+    alert("Permission required!");
+    return;
+  }
+
+  const result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    quality: 0.8,
+  });
+
+  if (!result.canceled) {
+    return result.assets[0];
+  }
+};
+
+export async function uploadImage(file: ImagePicker.ImagePickerAsset) {
+   try {
+    const response = await storage.createFile(
+      appwriteConfig.imageStorageBucketId,
+      ID.unique(),
+      {
+        uri: file.uri,
+        name: file.fileName || "image.jpg",
+        type: file.mimeType || "image/jpeg",
+        size: file.fileSize || 0,
+      }
+    );
+
+    return response.$id;
+  } catch (error) {
+    console.log("Upload error:", error);
   }
 }
