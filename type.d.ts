@@ -95,6 +95,8 @@ interface CreateUserParams {
   email: string;
   password: string;
   name: string;
+  contact: string;
+  fileId?: string;
 }
 
 interface SignInParams {
