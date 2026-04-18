@@ -23,13 +23,17 @@ export default function Index() {
 
           return (
             <View>
-              <Pressable
+              <TouchableOpacity
                 className={`offer-card ${isEven ? "flex-row-reverse" : "flex-row"}`}
                 style={{ backgroundColor: item.color }}
-                android_ripple={{ color: "#ffffff22" }}
-                onPress={() => router.push({pathname: "/search", params: { category: item.categoryId }})}
+                onPress={() =>
+                  router.push({
+                    pathname: "/search",
+                    params: { category: item.categoryId },
+                  })
+                }
               >
-                {() => (
+                {
                   <Fragment>
                     <View className={"h-full w-1/2"}>
                       <Image
@@ -53,8 +57,8 @@ export default function Index() {
                       />
                     </View>
                   </Fragment>
-                )}
-              </Pressable>
+                }
+              </TouchableOpacity>
             </View>
           );
         }}

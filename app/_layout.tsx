@@ -29,10 +29,5 @@ export default function RootLayout() {
     return null;
   }
 
-  return (
-    <>
-      <StatusBar hidden={true} />
-      <Stack screenOptions={{ headerShown: false }}></Stack>
-    </>
-  );
+  return <Stack screenOptions={{ headerShown: false }} />;
 }
