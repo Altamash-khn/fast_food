@@ -1,27 +1,100 @@
 import CustomButton from "@/components/CustomButton";
 import CustomHeader from "@/components/CustomHeader";
 import { images } from "@/constants";
-import { appwriteConfig, logout } from "@/lib/appwrite";
+import {
+  appwriteConfig,
+  databases,
+  logout,
+  pickImage,
+  storage,
+  uploadImage,
+} from "@/lib/appwrite";
 import { useAuthStore } from "@/store/auth.store";
 import { UserInfoProps } from "@/type";
 import { router } from "expo-router";
-import { Image, Text, View } from "react-native";
+import { useState } from "react";
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Profile() {
+  const [isUploading, setIsUploading] = useState(false);
   const { user } = useAuthStore();
   const { setUser, setIsAuthenticated } = useAuthStore();
   const imageUrl = `https://fra.cloud.appwrite.io/v1/storage/buckets/${appwriteConfig.bucketId}/files/${user?.fileId}/view?project=${appwriteConfig.projectId}`;
 
+  async function handleImageEdit() {
+    if (!user) return;
+
+    const file = await pickImage();
+    if (!file) return;
+
+    const oldFileId = user.fileId;
+
+    try {
+      setIsUploading(true);
+      const uploadedFileId = await uploadImage(file);
+      if (!uploadedFileId) {
+        Alert.alert("Image upload failed");
+        return;
+      }
+
+      await databases.updateDocument(
+        appwriteConfig.databaseId,
+        appwriteConfig.usersCollectionId,
+        user.$id,
+        {
+          fileId: uploadedFileId,
+        },
+      );
+
+      setUser({
+        ...user,
+        fileId: uploadedFileId,
+      });
+
+      if (oldFileId) {
+        await storage.deleteFile(appwriteConfig.bucketId, oldFileId);
+      }
+    } catch (error) {
+      console.log("Update failed:", error);
+      Alert.alert("Something went wrong");
+    } finally {
+      setIsUploading(false);
+    }
+  }
   return (
     <SafeAreaView className="px-6 my-3">
       <CustomHeader title="Profile" />
       <View>
         <View className="flex items-center mb-4">
-          <Image
-            source={{ uri: imageUrl }}
-            className="w-32 h-32 rounded-full"
-          />
+          <View className="relative w-32 h-32">
+            {isUploading ? (
+              <View className="w-32 h-32 rounded-full bg-gray-100 flex items-center justify-center">
+                <ActivityIndicator size="large" />
+              </View>
+            ) : (
+              <Image
+                source={{ uri: imageUrl }}
+                className="w-32 h-32 rounded-full"
+              />
+            )}
+
+            {!isUploading && (
+              <TouchableOpacity
+                className="h-8 w-8 bg-primary rounded-full flex items-center justify-center absolute bottom-3 right-0"
+                onPress={handleImageEdit}
+              >
+                <Image source={images.pencil} className="size-4" />
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
 
         <View className="bg-[#f7f7f7] border border-gray-50 px-5 rounded-2xl mb-10">

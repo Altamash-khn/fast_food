@@ -177,9 +177,3 @@ export async function uploadImage(file: ImagePicker.ImagePickerAsset) {
     console.log("Upload error:", error);
   }
 }
-
-export function getImageURL(fileId: string) {
-  // No async needed — these methods are synchronous
-  const url = storage.getFileView(appwriteConfig.imageStorageBucketId, fileId);
-  return url.toString(); // ✅ plain string for React Native Image
-}
