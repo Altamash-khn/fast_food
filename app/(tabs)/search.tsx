@@ -1,4 +1,4 @@
-import { FlatList, Text, View } from "react-native";
+import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import React, { useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import useFetch from "@/lib/useFetch";
@@ -26,7 +26,7 @@ export default function Search() {
     },
   });
 
-  const { data: categories } = useFetch({
+  const { data: categories, loading: categoriesLoading } = useFetch({
     fn: getCategories,
   });
 
@@ -35,7 +35,7 @@ export default function Search() {
   }, [category, query]);
 
   return (
-    <SafeAreaView className="bg-white h-full">
+    <SafeAreaView className="bg-[#FAFAFA] ] h-full">
       <FlatList
         data={data}
         renderItem={({ item, index }) => {
@@ -55,12 +55,12 @@ export default function Search() {
         ListHeaderComponent={() => {
           return (
             <View className="my-5 gap-5">
-              <View className="justify-between flex-row w-full">
+              <View className="justify-between flex-row w-full my-4">
                 <View className="flex-start">
                   <Text className="small-bold uppercase text-primary">
                     Search
                   </Text>
-                  <View className="flex-start flex-row gap-x-1 mt-0.5">
+                  <View className="flex-start flex-row gap-x-1 mt-2">
                     <Text className="paragraph-semibold text-dark-100">
                       Find your favourite food
                     </Text>
@@ -76,7 +76,13 @@ export default function Search() {
             </View>
           );
         }}
-        ListEmptyComponent={() => !loading && <NoResults />}
+        ListEmptyComponent={() =>
+          loading || categoriesLoading ? (
+            <ActivityIndicator size="large" color="#F97316" className="mt-20" />
+          ) : (
+            <NoResults />
+          )
+        }
       />
     </SafeAreaView>
   );
