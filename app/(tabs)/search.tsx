@@ -26,7 +26,7 @@ export default function Search() {
     },
   });
 
-  const { data: categories, loading: categoriesLoading } = useFetch({
+  const { data: categories } = useFetch({
     fn: getCategories,
   });
 

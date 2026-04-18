@@ -29,7 +29,7 @@ const SignIn = () => {
     try {
       await signIn(cleanedData);
       await fetchAuthenticatedUser();
-      router.replace("/");
+      router.replace("/(tabs)");
     } catch (error) {
       Alert.alert("Error", "Failed to sign in. Please check your credentials.");
       console.error("Sign-in error:", error);

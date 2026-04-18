@@ -1,4 +1,4 @@
-import { View, TextInput, TouchableOpacity, Image } from "react-native";
+import { View, TextInput, Image } from "react-native";
 import React, { useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import { images } from "@/constants";

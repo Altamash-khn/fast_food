@@ -9,7 +9,6 @@ import { useAuthStore } from "../../store/auth.store";
 import { CreateUserParams } from "@/type";
 import * as ImagePicker from "expo-image-picker";
 
-
 const SignUp = () => {
   const {
     control,
@@ -25,7 +24,8 @@ const SignUp = () => {
   });
 
   const [imageUri, setImageUri] = useState("");
-  const [selectedFile, setSelectedFile] = useState<ImagePicker.ImagePickerAsset | null>(null);
+  const [selectedFile, setSelectedFile] =
+    useState<ImagePicker.ImagePickerAsset | null>(null);
   const { fetchAuthenticatedUser } = useAuthStore();
 
   async function handleSignUp(data: CreateUserParams) {
@@ -53,7 +53,7 @@ const SignUp = () => {
       await createUser(cleanedData);
       await fetchAuthenticatedUser();
 
-      router.replace("/");
+      router.replace("/(tabs)");
     } catch (error) {
       Alert.alert("Error", "Failed to sign up...");
       console.error("Sign-up error:", error);
@@ -153,7 +153,7 @@ const SignUp = () => {
 
       <TouchableOpacity
         onPress={handlePickImage}
-  className="border-2 border-dashed border-gray-300 rounded-xl p-6 items-center justify-center gap-2"
+        className="border-2 border-dashed border-gray-300 rounded-xl p-6 items-center justify-center gap-2"
       >
         <Text>Select Profile Image</Text>
       </TouchableOpacity>

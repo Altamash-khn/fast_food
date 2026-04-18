@@ -15,7 +15,7 @@ import { useAuthStore } from "../../store/auth.store";
 const Layout = () => {
   const { isAuthenticated } = useAuthStore();
 
-  if (isAuthenticated) return <Redirect href="/" />;
+  if (isAuthenticated) return <Redirect href="/(tabs)" />;
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}

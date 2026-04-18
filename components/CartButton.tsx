@@ -1,12 +1,20 @@
 import { images } from "@/constants";
+import { useCartStore } from "@/store/cart.store";
+import { router } from "expo-router";
 import React from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
 const CartButton = () => {
-  const totalItems = 3; // Example total items in the cart
+  const { getTotalItems } = useCartStore();
+  const totalItems: number = getTotalItems();
 
   return (
-    <TouchableOpacity className="cart-btn" onPress={() => {}}>
+    <TouchableOpacity
+      className="cart-btn"
+      onPress={() => {
+        router.push("/cart");
+      }}
+    >
       <Image source={images.bag} className="size-5" resizeMode="contain" />
 
       {totalItems > 0 && (
