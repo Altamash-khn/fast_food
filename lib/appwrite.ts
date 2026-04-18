@@ -1,5 +1,6 @@
 import { CreateUserParams, GetMenuParams, SignInParams } from "@/type";
 import * as ImagePicker from "expo-image-picker";
+import { Alert } from "react-native";
 import {
   Account,
   Client,
@@ -23,7 +24,8 @@ export const appwriteConfig = {
     process.env.EXPO_PUBLIC_APPWRITE_CUSTOMIZATION_COLLECTION_ID!,
   menuCustomizationCollectionId:
     process.env.EXPO_PUBLIC_APPWRITE_MENU_CUSTOMIZATION_COLLECTION_ID!,
-  imageStorageBucketId: process.env.EXPO_PUBLIC_APPWRITE_IMAGE_STORAGE_BUCKET_ID!,
+  imageStorageBucketId:
+    process.env.EXPO_PUBLIC_APPWRITE_IMAGE_STORAGE_BUCKET_ID!,
 };
 
 export const client = new Client();
@@ -59,7 +61,7 @@ export async function createUser({
         accountId: newAccount.$id,
         contact,
         fileId,
-      }
+      },
     );
 
     return newUser;
@@ -74,6 +76,16 @@ export async function signIn({ email, password }: SignInParams) {
     return session;
   } catch (error) {
     throw new Error(error as string);
+  }
+}
+
+export async function logout() {
+  try {
+    const result = await account.deleteSession("current");
+    return result;
+  } catch (error) {
+    Alert.alert("Failed to logout");
+    console.error("error", error);
   }
 }
 
@@ -145,10 +157,10 @@ export async function pickImage() {
   if (!result.canceled) {
     return result.assets[0];
   }
-};
+}
 
 export async function uploadImage(file: ImagePicker.ImagePickerAsset) {
-   try {
+  try {
     const response = await storage.createFile(
       appwriteConfig.imageStorageBucketId,
       ID.unique(),
@@ -157,11 +169,17 @@ export async function uploadImage(file: ImagePicker.ImagePickerAsset) {
         name: file.fileName || "image.jpg",
         type: file.mimeType || "image/jpeg",
         size: file.fileSize || 0,
-      }
+      },
     );
 
     return response.$id;
   } catch (error) {
     console.log("Upload error:", error);
   }
+}
+
+export function getImageURL(fileId: string) {
+  // No async needed — these methods are synchronous
+  const url = storage.getFileView(appwriteConfig.imageStorageBucketId, fileId);
+  return url.toString(); // ✅ plain string for React Native Image
 }

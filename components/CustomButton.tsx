@@ -1,4 +1,10 @@
-import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React from "react";
 import { CustomButtonProps } from "@/type";
 
@@ -7,18 +13,25 @@ export default function CustomButton({
   title = "Click Me",
   style,
   textStyle,
-  leftIcon,
   isLoading,
+  icon,
 }: CustomButtonProps) {
   return (
     <TouchableOpacity className={`custom-btn ${style}`} onPress={onPress}>
-      {leftIcon}
-      <View className="flex-center flex-row">
+      <View className="flex-row items-center justify-center gap-2">
+        {icon && (
+          <Image source={icon} className="size-6" resizeMode="contain" />
+        )}
+
         {isLoading ? (
           <ActivityIndicator size="small" color="#fff" />
         ) : (
-          <Text className={`text-white-100 paragraph-semibold ${textStyle}`}>
-            {title}{" "}
+          <Text
+            className={`font-quicksand-bold paragraph-semibold ${
+              textStyle || "text-white-100"
+            }`}
+          >
+            {title}
           </Text>
         )}
       </View>

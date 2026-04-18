@@ -3,7 +3,7 @@ import CustomButton from "@/components/CustomButton";
 import CustomHeader from "@/components/CustomHeader";
 import EmptyCart from "@/components/EmptyCart";
 import { useCartStore } from "@/store/cart.store";
-import { CartItemType, MenuItem, PaymentInfoStripeProps } from "@/type";
+import { CartItemType, PaymentInfoStripeProps } from "@/type";
 import React from "react";
 import { FlatList, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";

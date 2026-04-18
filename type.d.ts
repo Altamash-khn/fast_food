@@ -1,3 +1,4 @@
+import { ImageSourcePropType } from "react-native";
 import { Models } from "react-native-appwrite";
 
 export interface MenuItem extends Models.Document {
@@ -20,6 +21,8 @@ export interface User extends Models.Document {
   name: string;
   email: string;
   avatar: string;
+  contact: string;
+  fileId?: string;
 }
 
 export interface CartCustomization {
@@ -64,6 +67,12 @@ interface PaymentInfoStripeProps {
   valueStyle?: string;
 }
 
+interface UserInfoProps {
+  label: string;
+  value: string;
+  image: ImageSourcePropType;
+}
+
 interface CustomButtonProps {
   onPress?: () => void;
   title?: string;
@@ -71,6 +80,7 @@ interface CustomButtonProps {
   leftIcon?: React.ReactNode;
   textStyle?: string;
   isLoading?: boolean;
+  icon?: ImageSourcePropType;
 }
 
 interface CustomHeaderProps {

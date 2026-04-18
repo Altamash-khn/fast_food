@@ -4,7 +4,6 @@ import React, { Fragment } from "react";
 import {
   FlatList,
   Image,
-  Pressable,
   Text,
   TouchableOpacity,
   View,
