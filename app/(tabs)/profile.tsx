@@ -24,7 +24,7 @@ export default function Profile() {
           />
         </View>
 
-        <View className="bg-[#f7f7f7] border border-gray-50 px-5 rounded-2xl mb-10">
+        <View className="bg-[#f7f7f7] border border-gray-50 px-5 py-3 rounded-2xl mb-10">
           <UserInfo value={user?.name!} label="Full Name" image={images.user} />
           <UserInfo
             value={user?.email!}
@@ -62,7 +62,7 @@ export default function Profile() {
 }
 
 const UserInfo = ({ image, label, value }: UserInfoProps) => (
-  <View className="flex flex-row items-center my-5 gap-5">
+  <View className="flex flex-row items-center my-4 gap-5">
     <View className="flex items-center justify-center h-14 w-14 rounded-full bg-primary/10">
       <Image source={image} className="size-6" />
     </View>
