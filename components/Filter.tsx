@@ -1,5 +1,5 @@
 import { View, Text, FlatList, TouchableOpacity, Platform } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Category } from "@/type";
 import { useLocalSearchParams } from "expo-router/build/hooks";
 import { router } from "expo-router";
@@ -7,14 +7,11 @@ import { router } from "expo-router";
 const Filter = ({ categories }: { categories: Category[] }) => {
   const searchParams = useLocalSearchParams();
 
-  const initialCategory = Array.isArray(searchParams?.category)
-    ? searchParams.category[0]
-    : searchParams?.category || "all";
-  const [active, setActive] = useState<string>(initialCategory);
+  const active = Array.isArray(searchParams?.category)
+  ? searchParams.category[0]
+  : searchParams?.category || "all";
 
   function handleCategoryPress(categoryId: string) {
-    setActive(categoryId);
-
     if (categoryId === "all") router.setParams({ category: "" });
     else router.setParams({ category: categoryId });
   }
@@ -22,6 +19,7 @@ const Filter = ({ categories }: { categories: Category[] }) => {
   const filteredData = categories
     ? [{ $id: "all", name: "All" }, ...categories]
     : [{ $id: "all", name: "All" }];
+
 
   return (
     <FlatList

@@ -1,6 +1,7 @@
 import CartItem from "@/components/CartItem";
 import CustomButton from "@/components/CustomButton";
 import CustomHeader from "@/components/CustomHeader";
+import EmptyCart from "@/components/EmptyCart";
 import { useCartStore } from "@/store/cart.store";
 import { CartItemType, MenuItem, PaymentInfoStripeProps } from "@/type";
 import React from "react";
@@ -14,13 +15,13 @@ export default function Cart() {
   const totalPrice = getTotalPrice();
 
   return (
-    <SafeAreaView className="bg-white h-full">
+    <SafeAreaView className="bg-[#FAFAFA]  h-full">
       <FlatList
         data={items}
         keyExtractor={(item) => item.id}
         contentContainerClassName="pb-28 px-5 pt-5"
         ListHeaderComponent={() => <CustomHeader title="Your Cart" />}
-        ListEmptyComponent={() => <Text>Cart Empty</Text>}
+        ListEmptyComponent={() => <EmptyCart />}
         ListFooterComponent={() =>
           totalItems > 0 && (
             <View className="gap-5">

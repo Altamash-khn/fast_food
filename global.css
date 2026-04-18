@@ -118,7 +118,7 @@
   }
 
   .paragraph-semibold {
-    @apply text-base font-quicksand-semibold;
+    @apply text-base font-quicksand-bold;
   }
 
   .paragraph-medium {
