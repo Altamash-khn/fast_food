@@ -1,4 +1,9 @@
-import { CreateUserParams, GetMenuParams, SignInParams } from "@/type";
+import {
+  CreateUserParams,
+  GetMenuParams,
+  SignInParams,
+  UpdateUserProps,
+} from "@/type";
 import * as ImagePicker from "expo-image-picker";
 import { Alert } from "react-native";
 import {
@@ -175,5 +180,30 @@ export async function uploadImage(file: ImagePicker.ImagePickerAsset) {
     return response.$id;
   } catch (error) {
     console.log("Upload error:", error);
+  }
+}
+export async function updateUser(userId: string, data: UpdateUserProps) {
+  try {
+    await account.updateName(data.name);
+    
+    if (data.email !== data.currentEmail && data.password) {
+      await account.updateEmail(data.email, data.password);
+    }
+
+    const response = await databases.updateDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.usersCollectionId,
+      userId,
+      {
+        name: data.name,
+        email: data.email,
+        contact: data.contact,
+      },
+    );
+
+    return response;
+  } catch (error) {
+    console.log("Update user error:", error);
+    throw error;
   }
 }

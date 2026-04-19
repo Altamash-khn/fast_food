@@ -103,6 +103,14 @@ interface ProfileFieldProps {
   icon: ImageSourcePropType;
 }
 
+interface UpdateUserProps {
+  name: string;
+  email: string;
+  contact: string;
+  password?: string;
+  currentEmail?: string;
+}
+
 interface CreateUserParams {
   email: string;
   password: string;

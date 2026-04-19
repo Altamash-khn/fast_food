@@ -115,6 +115,7 @@ export default function Profile() {
           title="Edit Profile"
           style="bg-[#fff4e6] py-4 border border-[#FE8C00] mb-5"
           textStyle="text-primary"
+          onPress={() => router.push("/profile/edit")}
         />
 
         <CustomButton

@@ -126,7 +126,13 @@ const SignIn = () => {
         <Controller
           control={control}
           name="password"
-          rules={{ required: "Password is required" }}
+          rules={{
+            required: "Password is required",
+            minLength: {
+              value: 6,
+              message: "Password must be at least 6 characters",
+            },
+          }}
           render={({ field }) => (
             <CustomInput
               placeholder="Enter your password"
