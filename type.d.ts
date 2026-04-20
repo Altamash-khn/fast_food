@@ -83,6 +83,11 @@ interface CustomButtonProps {
   icon?: ImageSourcePropType;
 }
 
+interface MenuOptionItemProps {
+  name: string;
+  image: ImageSourcePropType;
+}
+
 interface CustomHeaderProps {
   title?: string;
 }
