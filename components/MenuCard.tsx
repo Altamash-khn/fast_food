@@ -3,6 +3,7 @@ import { MenuItem } from "@/type";
 import { useCartStore } from "@/store/cart.store";
 import { images } from "@/constants";
 import { Feather } from "@expo/vector-icons";
+import { router } from "expo-router";
 
 const MenuCard = ({ item }: { item: MenuItem }) => {
   const { addItem, increaseQty, decreaseQty } = useCartStore();
@@ -25,6 +26,7 @@ const MenuCard = ({ item }: { item: MenuItem }) => {
               shadowRadius: 6.27,
             }
       }
+      onPress={() => router.push(`/menu/${item.$id}`)}
     >
       <Image
         source={{ uri: imageUrl }}

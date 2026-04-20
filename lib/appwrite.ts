@@ -182,6 +182,7 @@ export async function uploadImage(file: ImagePicker.ImagePickerAsset) {
     console.log("Upload error:", error);
   }
 }
+
 export async function updateUser(userId: string, data: UpdateUserProps) {
   try {
     await account.updateName(data.name);
@@ -205,5 +206,19 @@ export async function updateUser(userId: string, data: UpdateUserProps) {
   } catch (error) {
     console.log("Update user error:", error);
     throw error;
+  }
+}
+
+export async function getSingleMenu(menuId: string) {
+  try {
+    const menu = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.menuCollectionId,
+      [Query.equal("$id", menuId)],
+    );
+    return menu.documents[0];
+  } catch (error) {
+    Alert.alert("Failed to fetch menu");
+    console.error("error", error);
   }
 }

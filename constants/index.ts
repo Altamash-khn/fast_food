@@ -42,6 +42,7 @@ import salad from "@/assets/images/salad.png";
 import success from "@/assets/images/success.png";
 import tomatoes from "@/assets/images/tomatoes.png";
 import NoResults from "@/assets/images/Illustration.png";
+import add from "@/assets/icons/add.png";
 
 export const CATEGORIES = [
   {
@@ -104,12 +105,12 @@ export const sides = [
     price: 3.5,
   },
   {
-    name: "Onion Rings",
+    name: "Pringles",
     image: onionRings,
     price: 4.0,
   },
   {
-    name: "Mozarella Sticks",
+    name: "Mozz",
     image: mozarellaSticks,
     price: 5.0,
   },
@@ -142,12 +143,12 @@ export const toppings = [
     price: 1.0,
   },
   {
-    name: "Cucumber",
+    name: "Pickles",
     image: cucumber,
     price: 0.5,
   },
   {
-    name: "Mushrooms",
+    name: "Mushroom",
     image: mushrooms,
     price: 1.2,
   },
@@ -157,7 +158,7 @@ export const toppings = [
     price: 0.5,
   },
   {
-    name: "Tomatoes",
+    name: "Tomato",
     image: tomatoes,
     price: 0.7,
   },
@@ -184,6 +185,7 @@ export const images = {
   pizzaOne,
   salad,
   success,
+  add,
   tomatoes,
   arrowBack,
   arrowDown,
