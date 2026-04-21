@@ -1,11 +1,22 @@
 import { images } from "@/constants";
 import { MenuOptionItemProps } from "@/type";
-import { View, TouchableOpacity, Text, Image, Platform } from "react-native";
+import { Image, Platform, Text, TouchableOpacity, View } from "react-native";
 
-const MenuOptionItem = ({ item }: { item: MenuOptionItemProps }) => {
+const MenuOptionItem = ({
+  item,
+  isSelected,
+  onPress,
+}: {
+  item: MenuOptionItemProps;
+  isSelected?: boolean;
+  onPress?: () => void;
+}) => {
   return (
     <TouchableOpacity
-      className="bg-[#3C2F2F] rounded-2xl w-[90px]  self-start shadow-2xl"
+      onPress={onPress} // ✅ IMPORTANT
+      className={`rounded-2xl w-[110px] h-[125px] shadow-2xl ${
+        isSelected ? "bg-primary" : "bg-[#3C2F2F]"
+      }`}
       style={
         Platform.OS === "android"
           ? { elevation: 10, shadowColor: "#878787" }
@@ -14,18 +25,26 @@ const MenuOptionItem = ({ item }: { item: MenuOptionItemProps }) => {
               shadowOffset: { width: 0, height: 0 },
               shadowOpacity: 0.15,
               shadowRadius: 10,
-              elevation: 5,
             }
       }
     >
-      <View className="bg-white flex items-center justify-center rounded-t-2xl shadow-xl py-4">
-        <Image source={item.image} className="size-12 " />
+      {/* Top Image */}
+      <View className="bg-white flex items-center justify-center rounded-t-2xl py-4">
+        <Image source={item.image} className="size-12" />
       </View>
-      <View className="flex flex-row items-center justify-center gap-2 py-3 px-2">
+
+      {/* Bottom Content */}
+      <View className="flex-1 flex-row items-center justify-center gap-2 px-2">
         <Text className="text-sm font-quicksand-semibold text-white">
           {item.name}
         </Text>
-        <Image source={images.add} className="size-4" resizeMode="contain" />
+
+        {/* 🔥 SWITCH ICON */}
+        {isSelected ? (
+          <Text className="text-white text-lg">✓</Text> // ✅ selected
+        ) : (
+          <Image source={images.add} className="size-4" /> // ➕ default
+        )}
       </View>
     </TouchableOpacity>
   );

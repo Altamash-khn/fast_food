@@ -1,13 +1,7 @@
 import CartButton from "@/components/CartButton";
 import { images, offers } from "@/constants";
 import React, { Fragment } from "react";
-import {
-  FlatList,
-  Image,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import "../../global.css";
 import { router } from "expo-router";

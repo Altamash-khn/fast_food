@@ -1,3 +1,4 @@
+import { images } from "@/constants";
 import {
   CreateUserParams,
   GetMenuParams,
@@ -186,7 +187,7 @@ export async function uploadImage(file: ImagePicker.ImagePickerAsset) {
 export async function updateUser(userId: string, data: UpdateUserProps) {
   try {
     await account.updateName(data.name);
-    
+
     if (data.email !== data.currentEmail && data.password) {
       await account.updateEmail(data.email, data.password);
     }
@@ -222,3 +223,61 @@ export async function getSingleMenu(menuId: string) {
     console.error("error", error);
   }
 }
+
+export async function getMenuCustomizations(id: string) {
+  try {
+    const results = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.menuCustomizationCollectionId,
+      [Query.equal("menu", id)],
+    );
+    return results.documents;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function getCustomizationsByIds(ids: string[]) {
+  try {
+    const res = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.customizationCollectionId,
+      [Query.equal("$id", ids)],
+    );
+
+    return res.documents;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export const getImage = (name: string) => {
+  const key = name.toLowerCase().replace(/\s/g, "");
+
+  const map: Record<string, any> = {
+    // toppings
+    extracheese: images.cheese,
+    jalapeños: images.jalapeno, // closest match
+    onions: images.onions,
+    olives: images.jalapeno,
+    mushrooms: images.mushrooms,
+    tomatoes: images.tomatoes,
+    bacon: images.bacon,
+    avocado: images.avocado,
+
+    // sides
+    coke: images.coke,
+    fries: images.fries,
+    garlicbread: images.garlicbread,
+    chickennuggets: images.nuggets,
+    icedtea: images.clock, // fix
+    salad: images.salad,
+    potatowedges: images.fries,
+    mozzarellasticks: images.mozarellaSticks, // fix
+    sweetcorn: images.corn,
+    chocolavacake: images.chocolavacake,
+    icecreamscoop: images.scoop,
+  };
+
+  return map[key] || images.emptyState;
+};

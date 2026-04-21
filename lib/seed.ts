@@ -1,6 +1,9 @@
 import { ID } from "react-native-appwrite";
-import { appwriteConfig, databases, storage } from "./appwrite";
+import { appwriteConfig, databases } from "./appwrite";
 import dummyData from "./data";
+
+// 🔥 delay helper (VERY IMPORTANT)
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 interface Category {
   name: string;
@@ -10,7 +13,7 @@ interface Category {
 interface Customization {
   name: string;
   price: number;
-  type: "topping" | "side" | "size" | "crust" | string; // extend as needed
+  type: "topping" | "side" | "size" | "crust" | string;
 }
 
 interface MenuItem {
@@ -22,7 +25,9 @@ interface MenuItem {
   calories: number;
   protein: number;
   category_name: string;
-  customizations: string[]; // list of customization names
+  subtitle: string;
+  bun_type: string;
+  customizations: string[];
 }
 
 interface DummyData {
@@ -31,68 +36,40 @@ interface DummyData {
   menu: MenuItem[];
 }
 
-// ensure dummyData has correct shape
 const data = dummyData as DummyData;
 
+// 🔥 clear collections (safe)
 async function clearAll(collectionId: string): Promise<void> {
   const list = await databases.listDocuments(
     appwriteConfig.databaseId,
     collectionId,
   );
 
-  await Promise.all(
-    list.documents.map((doc) =>
-      databases.deleteDocument(
-        appwriteConfig.databaseId,
-        collectionId,
-        doc.$id,
-      ),
-    ),
-  );
-}
+  for (const doc of list.documents) {
+    await databases.deleteDocument(
+      appwriteConfig.databaseId,
+      collectionId,
+      doc.$id,
+    );
 
-async function clearStorage(): Promise<void> {
-  const list = await storage.listFiles(appwriteConfig.bucketId);
-
-  await Promise.all(
-    list.files.map((file) =>
-      storage.deleteFile(appwriteConfig.bucketId, file.$id),
-    ),
-  );
-}
-
-async function uploadImageToStorage(imageUrl: string) {
-  const response = await fetch(imageUrl);
-  const blob = await response.blob();
-
-  const fileObj = {
-    name: imageUrl.split("/").pop() || `file-${Date.now()}.jpg`,
-    type: blob.type,
-    size: blob.size,
-    uri: imageUrl,
-  };
-
-  const file = await storage.createFile(
-    appwriteConfig.bucketId,
-    ID.unique(),
-    fileObj,
-  );
-
-  return storage.getFileViewURL(appwriteConfig.bucketId, file.$id);
+    await delay(50); // prevent delete spam
+  }
 }
 
 async function seed(): Promise<void> {
-  console.log("seeding started");
+  console.log("🚀 seeding started");
 
-  // 1. Clear all
+  // ❗ clear ONLY DB (not storage)
   await clearAll(appwriteConfig.categoriesCollectionId);
   await clearAll(appwriteConfig.customizationCollectionId);
   await clearAll(appwriteConfig.menuCollectionId);
   await clearAll(appwriteConfig.menuCustomizationCollectionId);
-  await clearStorage();
 
-  // 2. Create Categories
+  // =========================
+  // 1️⃣ Categories
+  // =========================
   const categoryMap: Record<string, string> = {};
+
   for (const cat of data.categories) {
     const doc = await databases.createDocument(
       appwriteConfig.databaseId,
@@ -100,11 +77,19 @@ async function seed(): Promise<void> {
       ID.unique(),
       cat,
     );
+
     categoryMap[cat.name] = doc.$id;
+
+    await delay(150);
   }
 
-  // 3. Create Customizations
+  console.log("✅ categories done");
+
+  // =========================
+  // 2️⃣ Customizations
+  // =========================
   const customizationMap: Record<string, string> = {};
+
   for (const cus of data.customizations) {
     const doc = await databases.createDocument(
       appwriteConfig.databaseId,
@@ -116,31 +101,28 @@ async function seed(): Promise<void> {
         type: cus.type,
       },
     );
+
     customizationMap[cus.name] = doc.$id;
+
+    await delay(150);
   }
 
-  // 4. Create Menu Items
-  const menuMap: Record<string, string> = {};
-  for (const item of data.menu) {
-    const uploadedImage = item.image_url;
-    console.log("menu item obj", {
-      name: item.name,
-      description: item.description,
-      image_url: uploadedImage,
-      price: item.price,
-      rating: item.rating,
-      calories: item.calories,
-      protein: item.protein,
-    });
+  console.log("✅ customizations done");
 
+  // =========================
+  // 3️⃣ Menu + Relations
+  // =========================
+  for (const item of data.menu) {
     const doc = await databases.createDocument(
       appwriteConfig.databaseId,
       appwriteConfig.menuCollectionId,
       ID.unique(),
       {
         name: item.name,
+        subtitle: item.subtitle,
+        bun_type: item.bun_type,
         description: item.description,
-        image_url: uploadedImage,
+        image_url: item.image_url,
         price: item.price,
         rating: item.rating,
         calories: item.calories,
@@ -149,23 +131,34 @@ async function seed(): Promise<void> {
       },
     );
 
-    menuMap[item.name] = doc.$id;
+    await delay(200);
 
-    // 5. Create menu_customizations
+    // 🔥 create relations
     for (const cusName of item.customizations) {
+      const cusId = customizationMap[cusName];
+
+      if (!cusId) {
+        console.warn("⚠️ Missing customization:", cusName);
+        continue;
+      }
+
       await databases.createDocument(
         appwriteConfig.databaseId,
         appwriteConfig.menuCustomizationCollectionId,
         ID.unique(),
         {
           menu: doc.$id,
-          customizations: customizationMap[cusName],
+          customizations: cusId,
         },
       );
+
+      await delay(80);
     }
+
+    await delay(250);
   }
 
-  console.log("✅ Seeding complete.");
+  console.log("🎉 SEEDING COMPLETE");
 }
 
 export default seed;

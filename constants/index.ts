@@ -19,7 +19,6 @@ import trash from "@/assets/icons/trash.png";
 import user from "@/assets/icons/user.png";
 import arrowBack from "../assets/icons/arrow-back.png";
 
-
 import avatar from "@/assets/images/avatar.png";
 import avocado from "@/assets/images/avocado.png";
 import bacon from "@/assets/images/bacon.png";
@@ -43,6 +42,13 @@ import success from "@/assets/images/success.png";
 import tomatoes from "@/assets/images/tomatoes.png";
 import NoResults from "@/assets/images/Illustration.png";
 import add from "@/assets/icons/add.png";
+import coke from "@/assets/images/coke.jpg";
+import jalapeno from "@/assets/images/jalapeno.jpg";
+import garlicbread from "@/assets/images/garlicbread.jpg";
+import nuggets from "@/assets/images/nuggets.jpg";
+import chocolavacake from "@/assets/images/chocolava.webp";
+import scoop from "@/assets/images/icecreamscoop.jpg";
+import corn from "@/assets/images/corn.jpg";
 
 export const CATEGORIES = [
   {
@@ -73,28 +79,28 @@ export const offers = [
     title: "SUMMER COMBO",
     image: burgerOne,
     color: "#D33B0D",
-    categoryId: "69e0a08300142c31a810"
+    categoryId: "69e76f7e000cb2a7ac99",
   },
   {
     id: 2,
     title: "BURGER BASH",
     image: burgerTwo,
     color: "#DF5A0C",
-    categoryId: "69e0a08300142c31a810"
+    categoryId: "69e76f7e000cb2a7ac99",
   },
   {
     id: 3,
     title: "PIZZA PARTY",
     image: pizzaOne,
     color: "#084137",
-    categoryId: "69e0a083002e1062a1d9"
+    categoryId: "69e76f7e003816702a8b",
   },
   {
     id: 4,
     title: "BURRITO DELIGHT",
     image: buritto,
     color: "#EB920C",
-    categoryId: "69e0a08400049a55bfc5"
+    categoryId: "69e76f7f00322fe2cbd7",
   },
 ];
 
@@ -165,6 +171,13 @@ export const toppings = [
 ];
 
 export const images = {
+  corn,
+  chocolavacake,
+  scoop,
+  nuggets,
+  coke,
+  jalapeno,
+  garlicbread,
   avatar,
   avocado,
   bacon,

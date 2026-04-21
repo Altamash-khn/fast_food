@@ -8,15 +8,19 @@ import {
   TouchableOpacity,
   Platform,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import useFetch from "@/lib/useFetch";
-import { getSingleMenu } from "@/lib/appwrite";
+import {
+  getCustomizationsByIds,
+  getImage,
+  getMenuCustomizations,
+  getSingleMenu,
+} from "@/lib/appwrite";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomHeader from "@/components/CustomHeader";
-import { images, sides, toppings } from "@/constants";
+import { images } from "@/constants";
 import MenuOptionItem from "@/components/MenuOptionItem";
-import { MenuOptionItemProps } from "@/type";
 import { Feather } from "@expo/vector-icons";
 import { useCartStore } from "@/store/cart.store";
 
@@ -37,6 +41,10 @@ const StarRating = ({ rating }: { rating: number }) => {
 };
 
 const SingleMenu = () => {
+  const [selectedCustomizations, setSelectedCustomizations] = useState<
+    string[]
+  >([]);
+  const hasSeeded = useRef(false); // ✅ ADD THIS
   const { id } = useLocalSearchParams();
 
   const {
@@ -46,10 +54,64 @@ const SingleMenu = () => {
   } = useFetch({
     fn: () => getSingleMenu(id as string),
   });
-  const { items, decreaseQty, increaseQty, addItem } = useCartStore();
-  const isInCart = items.find((cartItem) => cartItem.id === menu?.$id);
-  console.log("menu", menu);
 
+  const { items, decreaseQty, increaseQty, addItem, updateCustomizations } =
+    useCartStore();
+  const isInCart = items.find((cartItem) => cartItem.id === menu?.$id);
+
+  console.log("=== DEBUG ===");
+  console.log("menu.$id:", menu?.$id);
+  console.log("items in store:", JSON.stringify(items, null, 2));
+  console.log("isInCart:", JSON.stringify(isInCart, null, 2));
+  console.log("hasSeeded:", hasSeeded.current);
+  console.log("selectedCustomizations:", selectedCustomizations);
+
+  useEffect(() => {
+    // ✅ Only seed once, and only after menu has loaded
+    if (!hasSeeded.current && menu?.$id && isInCart?.customizations?.length) {
+      setSelectedCustomizations(isInCart.customizations.map((c) => c.id));
+      hasSeeded.current = true; // ✅ never run again for this mount
+    }
+  }, [menu?.$id, isInCart]);
+
+  const { data: customizations } = useFetch({
+    fn: async () => {
+      const menuCustomizations = await getMenuCustomizations(id as string);
+      const ids = menuCustomizations?.map((item) => item.customizations);
+      if (!ids?.length) return [];
+      return await getCustomizationsByIds(ids);
+    },
+  });
+
+  const toppingsData = customizations?.filter(
+    (item) => item.type === "topping",
+  );
+  const sidesData = customizations?.filter((item) => item.type === "side");
+
+  const toggleCustomization = (customizationId: string) => {
+    setSelectedCustomizations((prev) => {
+      const next = prev.includes(customizationId)
+        ? prev.filter((item) => item !== customizationId)
+        : [...prev, customizationId];
+
+      // ✅ If already in cart, sync customizations to store immediately
+      if (isInCart && menu?.$id) {
+        const updatedCustomizations =
+          customizations
+            ?.filter((c) => next.includes(c.$id))
+            .map((c) => ({
+              id: c.$id,
+              name: c.name,
+              price: c.price,
+              type: c.type,
+            })) ?? [];
+
+        updateCustomizations(menu.$id, updatedCustomizations);
+      }
+
+      return next;
+    });
+  };
 
   if (loading)
     return (
@@ -73,7 +135,7 @@ const SingleMenu = () => {
               {menu?.name}
             </Text>
             <Text className="text-[16px] font-quicksand text-[#878787] mb-3">
-              Cheseburger
+              {menu?.subtitle}
             </Text>
 
             <View className="mb-4">
@@ -113,11 +175,10 @@ const SingleMenu = () => {
               <Text className="text-sm text-gray-100 font-quicksand mb-1">
                 Bun Type
               </Text>
-              <Text className="font-quicksand-semibold">Whole Wheat</Text>
+              <Text className="font-quicksand-semibold">{menu?.bun_type}</Text>
             </View>
           </View>
 
-          {/* Image */}
           <View className="justify-start">
             <Image
               source={{ uri: menu?.image_url }}
@@ -152,10 +213,7 @@ const SingleMenu = () => {
 
         <View className="mt-8 mb-14">
           <Text className="font-quicksand text-[16px] text-gray-100 font-medium">
-            The Cheeseburger Wendy Burger is a classic fast food burger that
-            packs a punch of flavor in every bite. Made with a juicy beef patty
-            cooked to perfection, it topped with melted American cheese, crispy
-            lettuce, tomato, & crunchy pickles.
+            {menu?.description}
           </Text>
         </View>
 
@@ -164,13 +222,16 @@ const SingleMenu = () => {
             Toppings
           </Text>
           <FlatList
-            data={toppings}
+            data={toppingsData}
             horizontal
-            showsHorizontalScrollIndicator={false}
-            keyExtractor={(item) => item.name}
+            keyExtractor={(item) => item.$id}
             contentContainerClassName="gap-4"
             renderItem={({ item }) => (
-              <MenuOptionItem item={item as unknown as MenuOptionItemProps} />
+              <MenuOptionItem
+                item={{ name: item.name, image: getImage(item.name) }}
+                isSelected={selectedCustomizations.includes(item.$id)}
+                onPress={() => toggleCustomization(item.$id)}
+              />
             )}
           />
         </View>
@@ -180,20 +241,23 @@ const SingleMenu = () => {
             Side Options
           </Text>
           <FlatList
-            data={sides}
+            data={sidesData}
             horizontal
-            showsHorizontalScrollIndicator={false}
-            keyExtractor={(item) => item.name}
+            keyExtractor={(item) => item.$id}
             contentContainerClassName="gap-4"
             renderItem={({ item }) => (
-              <MenuOptionItem item={item as unknown as MenuOptionItemProps} />
+              <MenuOptionItem
+                item={{ name: item.name, image: getImage(item.name) }}
+                isSelected={selectedCustomizations.includes(item.$id)}
+                onPress={() => toggleCustomization(item.$id)}
+              />
             )}
           />
         </View>
       </ScrollView>
 
       <View
-        className={`flex-row items-center ${isInCart ? "justify-between" : "justify-center"} bg-white mx-4 mb-5 px-5 py-4 rounded-2xl absolute bottom-5 left-5 right-5 `}
+        className={`flex-row items-center ${isInCart ? "justify-between" : "justify-center"} bg-white mx-4 mb-5 px-5 py-4 rounded-2xl absolute bottom-5 left-5 right-5`}
         style={
           Platform.OS === "android"
             ? { elevation: 10 }
@@ -254,6 +318,15 @@ const SingleMenu = () => {
                 price: menu?.price!,
                 image_url: menu?.image_url!,
                 selected: true,
+                customizations:
+                  customizations
+                    ?.filter((c) => selectedCustomizations.includes(c.$id))
+                    .map((c) => ({
+                      id: c.$id,
+                      name: c.name,
+                      price: c.price,
+                      type: c.type,
+                    })) ?? [],
               })
             }
           >

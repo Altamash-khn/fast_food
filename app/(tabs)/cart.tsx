@@ -9,10 +9,22 @@ import { FlatList, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Cart() {
-  const { items, getTotalItems, getTotalPrice } = useCartStore();
+  const items = useCartStore((state) => state.items);
 
-  const totalItems = getTotalItems();
-  const totalPrice = getTotalPrice();
+  const totalItems = items.reduce((total, item) => {
+    if (!item.selected) return total;
+    return total + item.quantity;
+  }, 0);
+
+  const totalPrice = items.reduce((total, item) => {
+    if (!item.selected) return total;
+
+    const base = item.price;
+    const customPrice =
+      item.customizations?.reduce((s, c) => s + c.price, 0) ?? 0;
+
+    return total + item.quantity * (base + customPrice);
+  }, 0);
 
   return (
     <SafeAreaView className="bg-[#FAFAFA]  h-full">
