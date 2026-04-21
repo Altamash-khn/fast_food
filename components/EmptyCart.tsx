@@ -1,7 +1,7 @@
 import CustomButton from "@/components/CustomButton";
 import { router } from "expo-router";
 import React from "react";
-import {  Text, View, Image } from "react-native";
+import { Text, View, Image } from "react-native";
 
 const EmptyCart = () => (
   <View className="flex-1 items-center justify-center px-8 mt-16">
@@ -9,7 +9,9 @@ const EmptyCart = () => (
       <View className="w-48 h-48 rounded-full bg-orange-50 items-center justify-center">
         <View className="w-36 h-36 rounded-full bg-orange-100 items-center justify-center">
           <Image
-            source={{ uri: "https://cdn-icons-png.flaticon.com/512/2038/2038854.png" }}
+            source={{
+              uri: "https://cdn-icons-png.flaticon.com/512/2038/2038854.png",
+            }}
             className="w-24 h-24"
             resizeMode="contain"
           />
@@ -26,10 +28,14 @@ const EmptyCart = () => (
       Your cart is empty
     </Text>
     <Text className="text-gray-400 text-center text-sm leading-5 mb-8">
-      Looks like you haven't added{"\n"}anything to your cart yet.
+      Looks like you haven&apos;t added{"\n"}anything to your cart yet.
     </Text>
 
-    <CustomButton title="Browse Menu" style="w-full" onPress={() => router.push("/search")} />
+    <CustomButton
+      title="Browse Menu"
+      style="w-full"
+      onPress={() => router.push("/search")}
+    />
   </View>
 );
 

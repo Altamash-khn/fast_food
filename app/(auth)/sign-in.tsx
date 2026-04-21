@@ -5,7 +5,7 @@ import {
   Animated,
   TouchableOpacity,
   Modal,
-} from "react-native"; // add Modal
+} from "react-native";
 import React, { useRef, useState } from "react";
 import { Link, router } from "expo-router";
 import CustomButton from "@/components/CustomButton";

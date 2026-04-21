@@ -255,9 +255,8 @@ export const getImage = (name: string) => {
   const key = name.toLowerCase().replace(/\s/g, "");
 
   const map: Record<string, any> = {
-    // toppings
     extracheese: images.cheese,
-    jalapeños: images.jalapeno, // closest match
+    jalapeños: images.jalapeno, 
     onions: images.onions,
     olives: images.jalapeno,
     mushrooms: images.mushrooms,
@@ -265,15 +264,14 @@ export const getImage = (name: string) => {
     bacon: images.bacon,
     avocado: images.avocado,
 
-    // sides
     coke: images.coke,
     fries: images.fries,
     garlicbread: images.garlicbread,
     chickennuggets: images.nuggets,
-    icedtea: images.clock, // fix
+    icedtea: images.clock,
     salad: images.salad,
     potatowedges: images.fries,
-    mozzarellasticks: images.mozarellaSticks, // fix
+    mozzarellasticks: images.mozarellaSticks,
     sweetcorn: images.corn,
     chocolavacake: images.chocolavacake,
     icecreamscoop: images.scoop,

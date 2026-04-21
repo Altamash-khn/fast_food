@@ -23,7 +23,7 @@ const ProfileEdit = () => {
   });
 
   const watchedEmail = watch("email");
-  const emailChanged = watchedEmail !== user?.email;
+  const emailChanged = watchedEmail.trim() !== user?.email;
 
   async function onSubmit(data: UpdateUserProps) {
     if (!user) return;

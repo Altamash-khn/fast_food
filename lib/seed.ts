@@ -2,7 +2,6 @@ import { ID } from "react-native-appwrite";
 import { appwriteConfig, databases } from "./appwrite";
 import dummyData from "./data";
 
-// 🔥 delay helper (VERY IMPORTANT)
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 interface Category {

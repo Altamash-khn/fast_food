@@ -44,7 +44,7 @@ const SingleMenu = () => {
   const [selectedCustomizations, setSelectedCustomizations] = useState<
     string[]
   >([]);
-  const hasSeeded = useRef(false); // ✅ ADD THIS
+  const hasSeeded = useRef(false);
   const { id } = useLocalSearchParams();
 
   const {
@@ -59,18 +59,10 @@ const SingleMenu = () => {
     useCartStore();
   const isInCart = items.find((cartItem) => cartItem.id === menu?.$id);
 
-  console.log("=== DEBUG ===");
-  console.log("menu.$id:", menu?.$id);
-  console.log("items in store:", JSON.stringify(items, null, 2));
-  console.log("isInCart:", JSON.stringify(isInCart, null, 2));
-  console.log("hasSeeded:", hasSeeded.current);
-  console.log("selectedCustomizations:", selectedCustomizations);
-
   useEffect(() => {
-    // ✅ Only seed once, and only after menu has loaded
     if (!hasSeeded.current && menu?.$id && isInCart?.customizations?.length) {
       setSelectedCustomizations(isInCart.customizations.map((c) => c.id));
-      hasSeeded.current = true; // ✅ never run again for this mount
+      hasSeeded.current = true;
     }
   }, [menu?.$id, isInCart]);
 
@@ -94,7 +86,6 @@ const SingleMenu = () => {
         ? prev.filter((item) => item !== customizationId)
         : [...prev, customizationId];
 
-      // ✅ If already in cart, sync customizations to store immediately
       if (isInCart && menu?.$id) {
         const updatedCustomizations =
           customizations

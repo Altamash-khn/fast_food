@@ -35,7 +35,7 @@ export interface CartCustomization {
 }
 
 export interface CartItemType {
-  id: string; // menu item id
+  id: string;
   name: string;
   price: number;
   image_url: string;
@@ -51,7 +51,10 @@ export interface CartStore {
   increaseQty: (id: string, customizations: CartCustomization[]) => void;
   decreaseQty: (id: string, customizations: CartCustomization[]) => void;
   toggleSelection: (id: string, customizations: CartCustomization[]) => void;
-  updateCustomizations: (id: string, customizations: CartCustomization[]) => void;
+  updateCustomizations: (
+    id: string,
+    customizations: CartCustomization[],
+  ) => void;
   clearCart: () => void;
   getTotalItems: () => number;
   getTotalPrice: () => number;
