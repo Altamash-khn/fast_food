@@ -2,7 +2,6 @@ import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
 import "../global.css";
-import { StatusBar } from "react-native";
 import { useAuthStore } from "../store/auth.store";
 
 export default function RootLayout() {

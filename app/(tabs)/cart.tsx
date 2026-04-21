@@ -5,7 +5,14 @@ import EmptyCart from "@/components/EmptyCart";
 import { useCartStore } from "@/store/cart.store";
 import { CartItemType, PaymentInfoStripeProps } from "@/type";
 import React, { useRef, useState } from "react";
-import { Animated, FlatList, Modal, Text, TouchableOpacity, View } from "react-native";
+import {
+  Animated,
+  FlatList,
+  Modal,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { Circle, Path, G, Line } from "react-native-svg";
 import { router } from "expo-router";
@@ -13,10 +20,33 @@ import { router } from "expo-router";
 const OrderSuccessIllustration = () => (
   <View className="items-center justify-center my-6">
     <Svg width={160} height={160} viewBox="0 0 160 160">
-      <Circle cx="80" cy="80" r="60" stroke="#F97316" strokeWidth="2" strokeDasharray="6 5" fill="none" opacity={0.35} />
-      <Circle cx="80" cy="80" r="44" stroke="#F97316" strokeWidth="2.5" fill="none" />
+      <Circle
+        cx="80"
+        cy="80"
+        r="60"
+        stroke="#F97316"
+        strokeWidth="2"
+        strokeDasharray="6 5"
+        fill="none"
+        opacity={0.35}
+      />
+      <Circle
+        cx="80"
+        cy="80"
+        r="44"
+        stroke="#F97316"
+        strokeWidth="2.5"
+        fill="none"
+      />
       <Circle cx="80" cy="80" r="32" fill="#F97316" />
-      <Path d="M66 80 L76 90 L96 70" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      <Path
+        d="M66 80 L76 90 L96 70"
+        stroke="white"
+        strokeWidth="4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
       <Circle cx="28" cy="62" r="4" fill="#F97316" opacity={0.8} />
       <Circle cx="132" cy="72" r="5" fill="#F97316" opacity={0.6} />
       <Circle cx="42" cy="110" r="3" fill="#F97316" opacity={0.5} />
@@ -47,10 +77,17 @@ export default function Cart() {
   const translateY = useRef(new Animated.Value(300)).current;
 
   const selectedItems = items.filter((i) => i.selected);
-  const totalItems = selectedItems.reduce((total, item) => total + item.quantity, 0);
-  const basePrice = selectedItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  const totalItems = selectedItems.reduce(
+    (total, item) => total + item.quantity,
+    0,
+  );
+  const basePrice = selectedItems.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0,
+  );
   const customizationPrice = selectedItems.reduce((total, item) => {
-    const customCost = item.customizations?.reduce((s, c) => s + c.price, 0) ?? 0;
+    const customCost =
+      item.customizations?.reduce((s, c) => s + c.price, 0) ?? 0;
     return total + customCost * item.quantity;
   }, 0);
   const totalPrice = basePrice + customizationPrice;
@@ -111,8 +148,11 @@ export default function Cart() {
                   valueStyle="base-bold !text-dark-100 !text-right"
                 />
               </View>
-              {/* ✅ Now calls handleOrderNow */}
-              <CustomButton title="Order Now" style="mt-5" onPress={handleOrderNow} />
+              <CustomButton
+                title="Order Now"
+                style="mt-5"
+                onPress={handleOrderNow}
+              />
             </View>
           )
         }
@@ -137,7 +177,8 @@ export default function Cart() {
               Order Placed!
             </Text>
             <Text className="text-gray-400 text-center mt-2 text-sm">
-              Your order has been placed successfully. We'll get it to you soon!
+              Your order has been placed successfully. We&apos;ll get it to you
+              soon!
             </Text>
 
             <TouchableOpacity

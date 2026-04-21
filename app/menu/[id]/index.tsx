@@ -248,7 +248,7 @@ const SingleMenu = () => {
       </ScrollView>
 
       <View
-        className={`flex-row items-center ${isInCart ? "justify-between" : "justify-center"} bg-white mx-4 mb-5 px-5 py-4 rounded-2xl absolute bottom-5 left-5 right-5`}
+        className={`flex-row items-center gap-5 ${isInCart ? "" : "justify-center"} bg-white mb-5 px-5 py-4 rounded-2xl absolute bottom-5 left-5 right-5`}
         style={
           Platform.OS === "android"
             ? { elevation: 10 }
@@ -262,7 +262,7 @@ const SingleMenu = () => {
       >
         {isInCart ? (
           <>
-            <View className="flex-row items-center gap-4 bg-[#fff4e6] px-4 py-3 rounded-full">
+            <View className="flex-row items-center gap-3 bg-[#fff4e6] px-4 py-3 rounded-full">
               <TouchableOpacity
                 onPress={() =>
                   decreaseQty(

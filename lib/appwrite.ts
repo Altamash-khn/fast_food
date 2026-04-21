@@ -6,7 +6,7 @@ import {
   UpdateUserProps,
 } from "@/type";
 import * as ImagePicker from "expo-image-picker";
-import { Alert } from "react-native";
+import { Alert, Linking } from "react-native";
 import {
   Account,
   Client,
@@ -151,7 +151,17 @@ export async function pickImage() {
   const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
   if (!permission.granted) {
-    alert("Permission required!");
+    Alert.alert(
+      "Permission required",
+      "Please allow access to photos from settings",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Open Settings",
+          onPress: () => Linking.openSettings(),
+        },
+      ],
+    );
     return;
   }
 
@@ -256,7 +266,7 @@ export const getImage = (name: string) => {
 
   const map: Record<string, any> = {
     extracheese: images.cheese,
-    jalapeños: images.jalapeno, 
+    jalapeños: images.jalapeno,
     onions: images.onions,
     olives: images.jalapeno,
     mushrooms: images.mushrooms,
