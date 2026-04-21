@@ -6,6 +6,7 @@ import {
   FlatList,
   ScrollView,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import React from "react";
 import { useLocalSearchParams } from "expo-router";
@@ -45,8 +46,10 @@ const SingleMenu = () => {
   } = useFetch({
     fn: () => getSingleMenu(id as string),
   });
-  const { items, decreaseQty, increaseQty } = useCartStore();
+  const { items, decreaseQty, increaseQty, addItem } = useCartStore();
   const isInCart = items.find((cartItem) => cartItem.id === menu?.$id);
+  console.log("menu", menu);
+
 
   if (loading)
     return (
@@ -60,8 +63,8 @@ const SingleMenu = () => {
   if (error) return <Text className="text-error">{error}</Text>;
 
   return (
-    <SafeAreaView className="flex-1 bg-[#fbfbfb] px-5 pt-4">
-      <ScrollView>
+    <SafeAreaView className="flex-1  bg-white px-5 pt-4">
+      <ScrollView showsVerticalScrollIndicator={false} className="flex-1">
         <CustomHeader title="" />
 
         <View className="flex flex-row justify-between items-start mt-4">
@@ -172,7 +175,7 @@ const SingleMenu = () => {
           />
         </View>
 
-        <View>
+        <View className="mb-24">
           <Text className="text-[16px] font-quicksand-bold text-[#000000] mb-3">
             Side Options
           </Text>
@@ -187,40 +190,80 @@ const SingleMenu = () => {
             )}
           />
         </View>
-
-        <View>
-          <View className="bg-[#fff4e6] flex-row items-center justify-center gap-4 rounded-full self-center">
-            <TouchableOpacity
-              onPress={() =>
-                decreaseQty(
-                  menu?.$id!,
-                  (isInCart && isInCart.customizations) ?? [],
-                )
-              }
-              className="w-8 h-8 items-center justify-center rounded-full"
-            >
-              <Feather name="minus" size={16} color="#FF9C01" />
-            </TouchableOpacity>
-
-            <Text className="base-bold text-dark-100">
-              {isInCart?.quantity}
-            </Text>
-
-            <TouchableOpacity
-              onPress={() =>
-                increaseQty(
-                  menu?.$id!,
-                  (isInCart && isInCart.customizations) ?? [],
-                )
-              }
-              className="w-8 h-8 items-center justify-center rounded-full"
-            >
-              <Image source={images.plus} className="size-4" />
-            </TouchableOpacity>
-          </View>
-          <View></View>
-        </View>
       </ScrollView>
+
+      <View
+        className={`flex-row items-center ${isInCart ? "justify-between" : "justify-center"} bg-white mx-4 mb-5 px-5 py-4 rounded-2xl absolute bottom-5 left-5 right-5 `}
+        style={
+          Platform.OS === "android"
+            ? { elevation: 10 }
+            : {
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.1,
+                shadowRadius: 10,
+              }
+        }
+      >
+        {isInCart ? (
+          <>
+            <View className="flex-row items-center gap-4 bg-[#fff4e6] px-4 py-3 rounded-full">
+              <TouchableOpacity
+                onPress={() =>
+                  decreaseQty(
+                    menu?.$id!,
+                    (isInCart && isInCart.customizations) ?? [],
+                  )
+                }
+                className="w-8 h-8 items-center justify-center rounded-full"
+              >
+                <Feather name="minus" size={16} color="#FF9C01" />
+              </TouchableOpacity>
+
+              <Text className="text-lg font-quicksand-semibold text-dark-100">
+                {isInCart?.quantity || 1}
+              </Text>
+
+              <TouchableOpacity
+                onPress={() =>
+                  increaseQty(
+                    menu?.$id!,
+                    (isInCart && isInCart.customizations) ?? [],
+                  )
+                }
+                className="w-8 h-8 items-center justify-center rounded-full"
+              >
+                <Image source={images.plus} className="size-4" />
+              </TouchableOpacity>
+            </View>
+
+            <View className="bg-primary flex-row items-center gap-2 px-6 py-4 rounded-full">
+              <Image source={images.bag} className="size-5" tintColor="#fff" />
+              <Text className="text-white font-quicksand-semibold">
+                Add to cart (${menu?.price})
+              </Text>
+            </View>
+          </>
+        ) : (
+          <TouchableOpacity
+            className="bg-primary flex-row items-center justify-center gap-2 px-6 py-4 rounded-full"
+            onPress={() =>
+              addItem({
+                id: menu?.$id!,
+                name: menu?.name!,
+                price: menu?.price!,
+                image_url: menu?.image_url!,
+                selected: true,
+              })
+            }
+          >
+            <Image source={images.bag} className="size-5" tintColor="#fff" />
+            <Text className="text-white font-quicksand-semibold">
+              Add to cart (${menu?.price})
+            </Text>
+          </TouchableOpacity>
+        )}
+      </View>
     </SafeAreaView>
   );
 };
